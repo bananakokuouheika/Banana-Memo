@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head><meta http-equiv="cache-control" content="no-cache"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="-1"><style type="text/css"></style>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #memoList {
+            width: 600px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .memo {
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .memo .content {
+            margin-bottom: 5px;
+        }
+        #memoInput {
+            width: 400px;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        #addBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Banana's Memo</h1>
+
+    <!-- メモ表示エリア -->
+    <div id="memoList"></div>
+
+    <!-- メモ入力フォーム -->
+    <textarea id="memoInput" placeholder="メモを入力してください"></textarea><br>
+    <button id="addBtn" onclick="addMemo()">追加</button>
+
+    <script>
+        // ローカルストレージからメモデータを読み込む
+        const memos = JSON.parse(localStorage.getItem('memos')) || [];
+
+        // 初期メモの表示
+        memos.forEach(memo => {
+            displayMemo(memo.id, memo.content);
+        });
+
+        function addMemo() {
+            const content = document.getElementById('memoInput').value.trim();
+            if (content === '') return;
+
+            const id = Date.now().toString(); // 一意のIDを生成
+            const newMemo = { id: id, content: content };
+            memos.push(newMemo);
+            localStorage.setItem('memos', JSON.stringify(memos));
+
+            displayMemo(id, content); // メモを表示
+
+            document.getElementById('memoInput').value = ''; // 入力欄をクリア
+            document.getElementById('memoInput').focus(); // 入力欄にフォーカスを戻す
+        }
+
+        function displayMemo(id, content) {
+            const memoElement = document.createElement('div');
+            memoElement.id = id;
+            memoElement.classList.add('memo');
+            memoElement.innerHTML = `
+                <div class="content">${content}</div>
+                <button onclick="deleteMemo('${id}')">削除</button>
+            `;
+            document.getElementById('memoList').appendChild(memoElement);
+        }
+
+        function deleteMemo(id) {
+            const index = memos.findIndex(memo => memo.id === id);
+            if (index !== -1) {
+                memos.splice(index, 1);
+                localStorage.setItem('memos', JSON.stringify(memos));
+                document.getElementById(id).remove();
+            }
+        }
+    </script>
+
+
+<script></script></body>
